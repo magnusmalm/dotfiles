@@ -1,0 +1,67 @@
+Xterm*termName: xterm-256color
+
+XTerm*locale: true
+
+XTerm*metaSendsEscape: true
+
+Xterm*saveLines: 65536
+
+XTerm*VT100.translations: #override <Btn1Up>: select-end(PRIMARY, CLIPBOARD, CUT_BUFFER0)
+
+Xterm*borderWidth: 0
+
+Xterm*eightBitInput: false
+
+! X cursor
+Xcursor.theme: Vanilla-DMZ
+
+! XFT and Font settings
+Xft*dpi:       96
+Xft*antialias: true
+Xft*hinting:   true
+Xft*hintstyle: hintfull
+Xft*rgba:      rgb
+faceName: DejaVu Sans Mono
+faceSize: 11
+
+Emacs.pane.menubar.shadowThickness: 1
+Emacs.pane.menubar.margin: 1
+Emacs.toolBar: off
+Emacs.menuBar: off
+Emacs.verticalScrollBars: off
+Emacs.cursorColor: magenta
+
+! Zenburn
+xterm*background:  #3f3f3f
+xterm*foreground:  #dcdccc
+xterm*color0:      #1E2320
+xterm*color1:      #705050
+xterm*color2:      #60b48a
+xterm*color3:      #dfaf8f
+xterm*color4:      #506070
+xterm*color5:      #dc8cc3
+xterm*color6:      #8cd0d3
+xterm*color7:      #dcdccc
+xterm*color8:      #709080
+xterm*color9:      #dca3a3
+xterm*color10:     #c3bf9f
+xterm*color11:     #f0dfaf
+xterm*color12:     #94bff3
+xterm*color13:     #ec93d3
+xterm*color14:     #93e0e3
+xterm*color15:     #ffffff
+
+XTerm*on2Clicks: word
+XTerm*on3Clicks: regex [^	]*
+XTerm*on4Clicks: line
+
+XTerm*allowWindowOps: true
+
+! ------------------------------------------------------------------------------
+! ROFI Color theme
+! ------------------------------------------------------------------------------
+rofi.color-enabled: true
+rofi.color-window: #002b37, #002b37, #003642
+rofi.color-normal: #002b37, #819396, #003643, #008ed4, #ffffff
+rofi.color-active: #002b37, #008ed4, #003643, #008ed4, #66c6ff
+rofi.color-urgent: #002b37, #da4281, #003643, #008ed4, #890661

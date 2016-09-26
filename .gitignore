@@ -1,0 +1,15 @@
+*.bash_history
+*.fasl
+.#*
+*.elc
+emacs/.emacs.d/recentf
+emacs/.emacs.d/tramp
+emacs/.emacs.d/elpa
+emacs/.emacs.d/var
+emacs/.emacs.d/ac-comphist.dat
+emacs/.emacs.d/tramp
+emacs/.emacs.d/elpa/gnupg/trustdb.gpg
+emacs/.emacs.d/bookmarks
+emacs/.emacs.d/ido-last.el
+emacs/.emacs.d/network-security.data
+emacs/.emacs.d/.python-environments/
