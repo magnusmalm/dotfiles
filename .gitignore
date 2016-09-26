@@ -13,3 +13,5 @@ emacs/.emacs.d/bookmarks
 emacs/.emacs.d/ido-last.el
 emacs/.emacs.d/network-security.data
 emacs/.emacs.d/.python-environments/
+/emacs/.emacs.d/customize
+/emacs/.emacs.d/projectile-bookmarks.eld
