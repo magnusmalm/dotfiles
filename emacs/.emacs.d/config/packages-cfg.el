@@ -232,8 +232,7 @@ abort completely with `C-g'."
 	 ("C-x M-g" . magit-dispatch-popup))
   :config
   (progn
-    (setenv "GIT_PAGER" "")
-    (setq magit-completing-read-function 'magit-ido-completing-read)))
+    (setenv "GIT_PAGER" "")))
 
 (use-package multiple-cursors
   :ensure t
