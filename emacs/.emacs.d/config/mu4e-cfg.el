@@ -68,6 +68,8 @@
 	 (:from-or-to . 22)
 	 (:subject . nil)))
 
+(use-package mu4e-maildirs-extension
+  :ensure t)
 
 (mu4e-maildirs-extension)
 
