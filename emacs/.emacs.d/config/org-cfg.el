@@ -199,7 +199,9 @@ should be. After calling this function, call 'meeting-done' to reset the environ
      </style>"))
 
 (use-package ox-reveal
-  :ensure t)
+  :ensure t
+  :config
+  (setq org-reveal-root "file:///home/magnus/src/reveal.js"))
 
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
