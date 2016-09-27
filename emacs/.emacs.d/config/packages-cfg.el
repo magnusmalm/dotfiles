@@ -5,6 +5,12 @@
 
 ;;; Code:
 
+(use-package wgrep
+  :ensure t)
+
+(use-package wgrep-ag
+  :ensure t)
+
 (use-package projectile
   :ensure t
   :config
