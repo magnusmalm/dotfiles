@@ -8,10 +8,12 @@
 ;;;; Setup so we can use package management system and use-package
 (require 'package)
 
-(setq package-archives
-      (append package-archives
-	      '(("melpa" . "https://melpa.org/packages/"))
-	      '(("org" . "http://orgmode.org/elpa/"))))
+(progn
+  (setq package-archives nil)
+  (add-to-list 'package-archives
+	       '("melpa" . "https://melpa.org/packages/"))
+  (add-to-list 'package-archives
+	       '("org" . "http://orgmode.org/elpa/")))
 
 (package-initialize)
 
