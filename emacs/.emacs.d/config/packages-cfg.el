@@ -499,7 +499,9 @@ _h_ ^✜^ _l_     _r_eplace    _,_ unmark  _o_: quit
   (setq multi-term-dedicated-select-after-open-p t)
   (setq multi-term-scroll-to-bottom-on-output 'this)
   :config
-  (setq multi-term-program "/bin/bash"))
+  (setq multi-term-program "/bin/bash")
+  (add-hook 'term-mode-hook (lambda()
+                (yas-minor-mode -1))))
 
 (use-package whitespace
   :ensure t
