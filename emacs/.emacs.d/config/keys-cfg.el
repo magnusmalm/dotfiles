@@ -40,8 +40,8 @@
 (global-set-key (kbd "M-L") 'end-of-buffer)
 
 ;; isearch
-(global-set-key (kbd "M-;") 'isearch-forward)
-(global-set-key (kbd "M-:") 'isearch-backward)
+(global-set-key (kbd "M-;") 'move-cursor-previous-pane)
+(global-set-key (kbd "M-:") 'move-cursor-next-pane)
 
 (global-set-key (kbd "M-p") 'recenter-top-bottom)
 
@@ -93,8 +93,8 @@
 (global-set-key (kbd "M-A") 'shell-command)
 
 ;;; WINDOW SPLITING
-(global-set-key (kbd "M-s") 'move-cursor-next-pane)
-(global-set-key (kbd "M-S") 'move-cursor-previous-pane)
+(global-set-key (kbd "M-s") 'swiper)
+(global-set-key (kbd "M-S") 'counsel-ag)
 
 ;;; --------------------------------------------------
 ;;; STANDARD SHORTCUTS
