@@ -394,9 +394,9 @@ abort completely with `C-g'."
   ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
   (setq ivy-use-virtual-buffers t)
   ;; number of result lines to display
-  (setq ivy-height 10)
-  ;; does not count candidates
-  (setq ivy-count-format "")
+  (setq ivy-height 40)
+  ;; count candidates
+  (setq ivy-count-format "%-4d ")
   ;; no regexp by default
   (setq ivy-initial-inputs-alist nil)
   ;; configure regexp engine.
@@ -404,8 +404,9 @@ abort completely with `C-g'."
 	;; allow input not in order
         '((t   . ivy--regex-ignore-order)))
   (define-key ivy-minibuffer-map (kbd "M-k") 'ivy-next-line)
-  (define-key ivy-minibuffer-map (kbd "M-v") 'yank)
-  (define-key ivy-minibuffer-map (kbd "M-i") 'ivy-previous-line))
+  (define-key ivy-minibuffer-map (kbd "M-I") 'ivy-scroll-down-command)
+  (define-key ivy-minibuffer-map (kbd "M-K") 'ivy-scroll-up-command)
+  (define-key ivy-minibuffer-map (kbd "M-v") 'yank))
 
 (use-package counsel
   :ensure t
