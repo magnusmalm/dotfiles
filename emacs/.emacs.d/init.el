@@ -42,23 +42,9 @@
 
 (setq message-log-max 16384)
 
-(defun my/require-softly (feature &optional filename)
-  "As `require', but instead of an error just print a message.
-If there is an error, its message will be included in the message
-printed.
-Like `require', the return value will be FEATURE if the load was
-successful (or unnecessary) and nil if not."
-  (condition-case err
-      (require feature filename)
-    (error (message "Error loading %s: \"%s\""
-                    (if filename (format "%s (%s)" feature filename) feature)
-                    (error-message-string err))
-           nil)))
-
-
 (add-to-list 'load-path (expand-file-name "config/" user-emacs-directory))
 
-(my/require-softly 'functions-cfg)
+(require 'functions-cfg)
 (add-to-list 'load-path (e-d "customize/"))
 
 ;;; Default ~/.emacs.d/customize/<hostname>.el
@@ -73,13 +59,13 @@ successful (or unnecessary) and nil if not."
 (mmm/load "~/.secrets/emacs-secrets.el")
 ;; (mmm/load (e-d-c "secrets.el"))
 
-(my/require-softly 'packages-cfg)
-(my/require-softly 'org-cfg)
-(my/require-softly 'mu4e-cfg)
-(my/require-softly 'keys-cfg)
-(my/require-softly 'erc-cfg)
+(require 'packages-cfg)
+(require 'org-cfg)
+(require 'mu4e-cfg)
+(require 'keys-cfg)
+(require 'erc-cfg)
 
-(my/require-softly 'insert-time-string)
+(require 'insert-time-string)
 (global-set-key (kbd "C-c C-t") 'insert-time-string)
 (setq insert-time-string-format-alist
       (cons '("pseudo-iso-date" . "%Y-%m-%d") insert-time-string-format-alist))

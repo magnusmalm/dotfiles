@@ -5,6 +5,121 @@
 
 ;;; Code:
 
+(use-package ivy
+  :ensure t
+  :diminish (ivy-mode . "")
+  :init
+  (ivy-mode 1)
+  :bind
+  (:map ivy-mode-map
+	("C-'" . ivy-avy))
+  :config
+  ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
+  (setq ivy-use-virtual-buffers t)
+  ;; number of result lines to display
+  (setq ivy-height 40)
+  ;; count candidates
+  (setq ivy-count-format "%-4d ")
+  ;; no regexp by default
+  (setq ivy-initial-inputs-alist nil)
+  ;; configure regexp engine.
+  (setq ivy-re-builders-alist
+	;; allow input not in order
+        '((t   . ivy--regex-ignore-order)))
+  (define-key ivy-minibuffer-map (kbd "M-k") 'ivy-next-line)
+  (define-key ivy-minibuffer-map (kbd "M-i") 'ivy-previous-line)
+  (define-key ivy-minibuffer-map (kbd "M-I") 'ivy-scroll-down-command)
+  (define-key ivy-minibuffer-map (kbd "M-K") 'ivy-scroll-up-command)
+  (define-key ivy-minibuffer-map (kbd "M-v") 'yank)
+
+  (defhydra hydra-ivy (:hint nil
+			     :color pink)
+    "
+^^^^^^          ^Actions^    ^Dired^     ^Quit^
+^^^^^^--------------------------------------------
+^ ^ _k_ ^ ^     _._ repeat   _m_ark      _i_: cancel
+_h_ ^✜^ _l_     _r_eplace    _,_ unmark  _o_: quit
+^ ^ _j_ ^ ^     _u_ndo
+"
+    ;; arrows
+    ("h" ivy-beginning-of-buffer)
+    ("j" ivy-next-line)
+    ("k" ivy-previous-line)
+    ("l" ivy-end-of-buffer)
+    ;; actions
+    ("." hydra-repeat)
+    ("r" ivy-replace)
+    ("u" ivy-undo)
+    ;; dired
+    ("m" ivy-dired-mark)
+    ("," ivy-dired-unmark)
+    ;; exit
+    ("o" keyboard-escape-quit :exit t)
+    ("i" nil))
+
+  (defun ivy-dired-mark (arg)
+    (interactive "p")
+    (dotimes (_i arg)
+      (with-ivy-window
+	(dired-mark 1))
+      (ivy-next-line 1)
+      (ivy--exhibit)))
+
+  (defun ivy-dired-unmark (arg)
+    (interactive "p")
+    (dotimes (_i arg)
+      (with-ivy-window
+	(dired-unmark 1))
+      (ivy-next-line 1)
+      (ivy--exhibit)))
+
+  (defun ivy-replace ()
+    (interactive)
+    (let ((from (with-ivy-window
+		  (move-beginning-of-line nil)
+		  (when (re-search-forward
+			 (ivy--regex ivy-text) (line-end-position) t)
+		    (match-string 0)))))
+      (if (null from)
+	  (user-error "No match")
+	(let ((rep (read-string (format "Replace [%s] with: " from))))
+	  (with-selected-window swiper--window
+	    (undo-boundary)
+	    (replace-match rep t t))))))
+
+  (defun ivy-undo ()
+    (interactive)
+    (with-ivy-window
+      (undo)))
+
+  (define-key ivy-minibuffer-map (kbd "C-o") 'hydra-ivy/body))
+
+(use-package counsel
+  :ensure t
+  :bind ("M-a" . counsel-M-x))
+
+(use-package swiper
+  :ensure t
+  :config
+  (setq ivy-use-virtual-buffers t)
+  (define-key swiper-map (kbd "C-.")
+    (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'symbol))))))
+  (define-key swiper-map (kbd "M-.")
+    (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'word))))))
+  (global-set-key (kbd "C-M-w") #'swiper))
+
+(use-package smart-mode-line
+  :ensure t
+  :config
+  (progn
+    (setq sml/no-confirm-load-theme t)
+    (setq sml/theme 'respectful)
+    (sml/setup)
+    (setq sml/shorten-directory t)
+    (setq sml/shorten-modes t)
+    (setq sml/name-width 40)
+    (setq sml/mode-width 'full)))
+
 (use-package wgrep
   :ensure t)
 
@@ -106,7 +221,7 @@ abort completely with `C-g'."
 
   (setq save-abbrevs 'silently)
   (setq-default abbrev-mode t)
-)
+  )
 
 (use-package auto-complete
   :ensure t)
@@ -185,16 +300,16 @@ abort completely with `C-g'."
 	company-backends)
   (setq company-global-modes '(not gud-mode)))
 
-(use-package ido
-  :ensure t
-  :config
-  (ido-mode t)
-  (ido-everywhere 1)
-  (setq ido-enable-flex-matching t)
-  (setq ido-use-virtual-buffers t)
-  (setq ido-save-directory-list-file (e-d-v "ido-last.el"))
-  (add-to-list 'ido-work-directory-list-ignore-regexps tramp-file-name-regexp)
-)
+;; (use-package ido
+;;   :ensure t
+;;   :config
+;;   (ido-mode t)
+;;   (ido-everywhere 1)
+;;   (setq ido-enable-flex-matching t)
+;;   (setq ido-use-virtual-buffers t)
+;;   (setq ido-save-directory-list-file (e-d-v "ido-last.el"))
+;;   (add-to-list 'ido-work-directory-list-ignore-regexps tramp-file-name-regexp)
+;; )
 
 (use-package recentf
   :ensure t
@@ -215,14 +330,14 @@ abort completely with `C-g'."
 (use-package autorevert
   :ensure t)
 
-(use-package flx-ido
-  :ensure t
-  :init
-  (progn
-    (setq ido-use-faces nil))
-  :config
-  (ido-mode)
-  (flx-ido-mode 1))
+;; (use-package flx-ido
+;;   :ensure t
+;;   :init
+;;   (progn
+;;     (setq ido-use-faces nil))
+;;   :config
+;;   (ido-mode)
+;;   (flx-ido-mode 1))
 
 (use-package flycheck
   :ensure t
@@ -266,31 +381,20 @@ abort completely with `C-g'."
     (require 'smartparens-config)
     (smartparens-global-mode 1)))
 
-(use-package smex
-  :ensure t
-  :bind (("M-a" . smex)
-         ("M-A" . smex-major-mode-commands))
-  :init
-  (setq smex-save-file (e-d-v "smex-items")))
+;; (use-package smex
+;;   :ensure t
+;;   :bind (("M-a" . smex)
+;;          ("M-A" . smex-major-mode-commands))
+;;   :init
+;;   (setq smex-save-file (e-d-v "smex-items")))
 
-(use-package smart-mode-line
-  :ensure t
-  :config
-  (progn
-    (setq sml/no-confirm-load-theme t)
-    (setq sml/theme 'respectful)
-    (sml/setup)
-    (setq sml/shorten-directory t)
-    (setq sml/shorten-modes t)
-    (setq sml/name-width 40)
-    (setq sml/mode-width 'full)))
 
 (use-package which-key
   :ensure t
   :diminish which-key-mode
   :config
   (which-key-mode)
-  (which-key-setup-side-window-right-bottom)
+  (which-key-setup-side-window-bottom)
   (setq which-key-use-C-h-for-paging t
 	which-key-prevent-C-h-from-cycling t))
 
@@ -381,109 +485,7 @@ abort completely with `C-g'."
 (use-package org-pdfview
   :ensure t)
 
-(use-package flx)
-
-(use-package ivy
-  :ensure t
-  :diminish (ivy-mode . "")
-  :bind
-  (:map ivy-mode-map
-	("C-'" . ivy-avy))
-  :config
-  (ivy-mode 1)
-  ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-  (setq ivy-use-virtual-buffers t)
-  ;; number of result lines to display
-  (setq ivy-height 40)
-  ;; count candidates
-  (setq ivy-count-format "%-4d ")
-  ;; no regexp by default
-  (setq ivy-initial-inputs-alist nil)
-  ;; configure regexp engine.
-  (setq ivy-re-builders-alist
-	;; allow input not in order
-        '((t   . ivy--regex-ignore-order)))
-  (define-key ivy-minibuffer-map (kbd "M-k") 'ivy-next-line)
-  (define-key ivy-minibuffer-map (kbd "M-I") 'ivy-scroll-down-command)
-  (define-key ivy-minibuffer-map (kbd "M-K") 'ivy-scroll-up-command)
-  (define-key ivy-minibuffer-map (kbd "M-v") 'yank))
-
-(use-package counsel
-  :ensure t
-  :bind ("M-a" . counsel-M-x))
-
-(use-package swiper
-  :ensure t
-  :config
-  (setq ivy-use-virtual-buffers t)
-  (define-key swiper-map (kbd "C-.")
-    (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'symbol))))))
-  (define-key swiper-map (kbd "M-.")
-    (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'word))))))
-  (global-set-key (kbd "C-M-w") #'swiper))
-
-
-(defhydra hydra-ivy (:hint nil
-                     :color pink)
-  "
-^^^^^^          ^Actions^    ^Dired^     ^Quit^
-^^^^^^--------------------------------------------
-^ ^ _k_ ^ ^     _._ repeat   _m_ark      _i_: cancel
-_h_ ^✜^ _l_     _r_eplace    _,_ unmark  _o_: quit
-^ ^ _j_ ^ ^     _u_ndo
-"
-  ;; arrows
-  ("h" ivy-beginning-of-buffer)
-  ("j" ivy-next-line)
-  ("k" ivy-previous-line)
-  ("l" ivy-end-of-buffer)
-  ;; actions
-  ("." hydra-repeat)
-  ("r" ivy-replace)
-  ("u" ivy-undo)
-  ;; dired
-  ("m" ivy-dired-mark)
-  ("," ivy-dired-unmark)
-  ;; exit
-  ("o" keyboard-escape-quit :exit t)
-  ("i" nil))
-
-(defun ivy-dired-mark (arg)
-  (interactive "p")
-  (dotimes (_i arg)
-    (with-ivy-window
-      (dired-mark 1))
-    (ivy-next-line 1)
-    (ivy--exhibit)))
-
-(defun ivy-dired-unmark (arg)
-  (interactive "p")
-  (dotimes (_i arg)
-    (with-ivy-window
-      (dired-unmark 1))
-    (ivy-next-line 1)
-    (ivy--exhibit)))
-
-(defun ivy-replace ()
-  (interactive)
-  (let ((from (with-ivy-window
-                (move-beginning-of-line nil)
-                (when (re-search-forward
-                       (ivy--regex ivy-text) (line-end-position) t)
-                  (match-string 0)))))
-    (if (null from)
-        (user-error "No match")
-      (let ((rep (read-string (format "Replace [%s] with: " from))))
-        (with-selected-window swiper--window
-          (undo-boundary)
-          (replace-match rep t t))))))
-
-(defun ivy-undo ()
-  (interactive)
-  (with-ivy-window
-    (undo)))
-
-(define-key ivy-minibuffer-map (kbd "C-o") 'hydra-ivy/body)
+;; (use-package flx)
 
 ;; avy
 (use-package avy
@@ -608,11 +610,11 @@ _h_ ^✜^ _l_     _r_eplace    _,_ unmark  _o_: quit
     (add-to-list 'beacon-dont-blink-commands 'previous-line))
   :diminish beacon-mode)
 
-(use-package paradox
-  :ensure t
-  :commands paradox-list-packages
-  :config
-  (setq paradox-execute-asynchronously t))
+;; (use-package paradox
+;;   :ensure t
+;;   :commands paradox-list-packages
+;;   :config
+;;   (setq paradox-execute-asynchronously t))
 
 (progn
   (use-package rainbow-blocks :ensure t)
@@ -650,106 +652,106 @@ _h_ ^✜^ _l_     _r_eplace    _,_ unmark  _o_: quit
   (global-set-key (kbd "C-c C-y") 'hydra-yasnippet/body)
   (setq-default yas-prompt-functions '(yas-ido-prompt yas-dropdown-prompt)))
 
-(defhydra hydra-text (:hint nil)
-  "
-^Modes^ ^Commands^ ^Rectangles^
-----------------------------------------------------------------------
-_w_ritting mode _a_lign _k_ill
-_f_ill mode s_o_rt _y_ank
-_l_ine mode _D_efine word o_p_en
-fly_s_pell mode (_d_ at point) _c_lear
-_t_ypo mode _i_spell buffer _n_umber
-art_b_ollocks mode _h_elm word _r_eplace
-helm _u_nicode _I_nsert
-"
-  ("w" ejmr/toggle-writing-mode)
-  ("b" artbollocks-mode)
-  ("h" helm-word :color blue)
-  ("r" string-rectangle :color blue)
-  ("k" kill-rectangle :color blue)
-  ("y" yank-rectangle :color blue)
-  ("c" clear-rectangle :color blue)
-  ("I" string-insert-rectangle :color blue)
-  ("n" rectangle-number-lines :color blue)
-  ("p" open-rectangle :color blue)
-  ("u" helm-unicode :color blue)
-  ("f" auto-fill-mode)
-  ("a" align-regexp)
-  ("i" ispell-buffer :color blue)
-  ("o" sort-lines)
-  ("l" visual-line-mode)
-  ("s" flyspell-mode)
-  ("d" define-word-at-point :color blue)
-  ("D" define-word :color blue)
-  ("t" typo-mode))
-(global-set-key (kbd "C-c M-t") 'hydra-text/body)
+;; (defhydra hydra-text (:hint nil)
+;;   "
+;; ^Modes^ ^Commands^ ^Rectangles^
+;; ----------------------------------------------------------------------
+;; _w_ritting mode _a_lign _k_ill
+;; _f_ill mode s_o_rt _y_ank
+;; _l_ine mode _D_efine word o_p_en
+;; fly_s_pell mode (_d_ at point) _c_lear
+;; _t_ypo mode _i_spell buffer _n_umber
+;; art_b_ollocks mode _h_elm word _r_eplace
+;; helm _u_nicode _I_nsert
+;; "
+;;   ("w" ejmr/toggle-writing-mode)
+;;   ("b" artbollocks-mode)
+;;   ("h" helm-word :color blue)
+;;   ("r" string-rectangle :color blue)
+;;   ("k" kill-rectangle :color blue)
+;;   ("y" yank-rectangle :color blue)
+;;   ("c" clear-rectangle :color blue)
+;;   ("I" string-insert-rectangle :color blue)
+;;   ("n" rectangle-number-lines :color blue)
+;;   ("p" open-rectangle :color blue)
+;;   ("u" helm-unicode :color blue)
+;;   ("f" auto-fill-mode)
+;;   ("a" align-regexp)
+;;   ("i" ispell-buffer :color blue)
+;;   ("o" sort-lines)
+;;   ("l" visual-line-mode)
+;;   ("s" flyspell-mode)
+;;   ("d" define-word-at-point :color blue)
+;;   ("D" define-word :color blue)
+;;   ("t" typo-mode))
+;; (global-set-key (kbd "C-c M-t") 'hydra-text/body)
 
-(use-package swoop
-  :ensure t
-  ;; :init (use-package helm-swoop)
-  :config
-  (defhydra hydra-swoop (:color blue)
-    "swoop"
-    ;; ("h" helm-swoop "helm")
-    ("s" swoop "swoop")
-    ("m" swoop-multi "multi")
-    ("p" swoop-pcre-regexp "pcre")
-    ("b" swoop-back-to-last-position "back"))
-  (global-set-key (kbd "C-c C-s") 'hydra-swoop/body))
+;; (use-package swoop
+;;   :ensure t
+;;   ;; :init (use-package helm-swoop)
+;;   :config
+;;   (defhydra hydra-swoop (:color blue)
+;;     "swoop"
+;;     ;; ("h" helm-swoop "helm")
+;;     ("s" swoop "swoop")
+;;     ("m" swoop-multi "multi")
+;;     ("p" swoop-pcre-regexp "pcre")
+;;     ("b" swoop-back-to-last-position "back"))
+;;   (global-set-key (kbd "C-c C-s") 'hydra-swoop/body))
 
-(progn
-  ;; (use-package hydra-examples :ensure t)
-  (defhydra hydra-window (:hint nil)
-    "
-Split: _v_ert _s_:horz
-Delete: _c_lose _o_ther
-Switch Window: _h_:left _j_:down _k_:up _l_:right
-Buffers: _p_revious _n_ext _b_:select _f_ind-file _F_projectile
-Winner: _u_ndo _r_edo
-Resize: _H_:splitter left _J_:splitter down _K_:splitter up _L_:splitter right
-Move: _a_:up _z_:down _i_menu"
-    ("z" scroll-up-line)
-    ("a" scroll-down-line)
-    ("i" idomenu)
-    ("u" winner-undo)
-    ("r" winner-redo)
-    ("h" windmove-left)
-    ("j" windmove-down)
-    ("k" windmove-up)
-    ("l" windmove-right)
-    ("p" previous-buffer)
-    ("n" next-buffer)
-    ("b" ido-switch-buffer)
-    ("f" ido-find-file)
-    ("F" projectile-find-file)
-    ("s" split-window-below)
-    ("v" split-window-right)
-    ("c" delete-window)
-    ("o" delete-other-windows)
-    ("H" hydra-move-splitter-left)
-    ("J" hydra-move-splitter-down)
-    ("K" hydra-move-splitter-up)
-    ("L" hydra-move-splitter-right)
-    ("q" nil))
-  (global-set-key (kbd "C-c C-w") #'hydra-window/body))
+;; (progn
+;;   ;; (use-package hydra-examples :ensure t)
+;;   (defhydra hydra-window (:hint nil)
+;;     "
+;; Split: _v_ert _s_:horz
+;; Delete: _c_lose _o_ther
+;; Switch Window: _h_:left _j_:down _k_:up _l_:right
+;; Buffers: _p_revious _n_ext _b_:select _f_ind-file _F_projectile
+;; Winner: _u_ndo _r_edo
+;; Resize: _H_:splitter left _J_:splitter down _K_:splitter up _L_:splitter right
+;; Move: _a_:up _z_:down _i_menu"
+;;     ("z" scroll-up-line)
+;;     ("a" scroll-down-line)
+;;     ("i" idomenu)
+;;     ("u" winner-undo)
+;;     ("r" winner-redo)
+;;     ("h" windmove-left)
+;;     ("j" windmove-down)
+;;     ("k" windmove-up)
+;;     ("l" windmove-right)
+;;     ("p" previous-buffer)
+;;     ("n" next-buffer)
+;;     ("b" ido-switch-buffer)
+;;     ("f" ido-find-file)
+;;     ("F" projectile-find-file)
+;;     ("s" split-window-below)
+;;     ("v" split-window-right)
+;;     ("c" delete-window)
+;;     ("o" delete-other-windows)
+;;     ("H" hydra-move-splitter-left)
+;;     ("J" hydra-move-splitter-down)
+;;     ("K" hydra-move-splitter-up)
+;;     ("L" hydra-move-splitter-right)
+;;     ("q" nil))
+;;   (global-set-key (kbd "C-c C-w") #'hydra-window/body))
 
-(use-package origami
-  :ensure t
-  :config
-  (defhydra hydra-origami (:color red :hint nil)
-    "
-_o_pen node _n_ext fold toggle _f_orward
-_c_lose node _p_revious fold toggle _a_ll
-toggle _r_ecursively
-"
-    ("o" origami-open-node)
-    ("c" origami-close-node)
-    ("n" origami-next-fold)
-    ("p" origami-previous-fold)
-    ("f" origami-forward-toggle-node)
-    ("r" origami-recursively-toggle-node)
-    ("a" origami-toggle-all-nodes))
-  (global-set-key (kbd "C-c C-g") #'hydra-origami/body))
+;; (use-package origami
+;;   :ensure t
+;;   :config
+;;   (defhydra hydra-origami (:color red :hint nil)
+;;     "
+;; _o_pen node _n_ext fold toggle _f_orward
+;; _c_lose node _p_revious fold toggle _a_ll
+;; toggle _r_ecursively
+;; "
+;;     ("o" origami-open-node)
+;;     ("c" origami-close-node)
+;;     ("n" origami-next-fold)
+;;     ("p" origami-previous-fold)
+;;     ("f" origami-forward-toggle-node)
+;;     ("r" origami-recursively-toggle-node)
+;;     ("a" origami-toggle-all-nodes))
+;;   (global-set-key (kbd "C-c C-g") #'hydra-origami/body))
 
 (use-package mingus
   :ensure t)

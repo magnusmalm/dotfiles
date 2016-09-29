@@ -116,6 +116,10 @@ if [ -f ~/.secrets/bash_secrets ]; then
     . ~/.secrets/bash_secrets
 fi
 
+if [ -f ~/.bash_host_common ]; then
+    . ~/.bash_host_common
+fi
+
 user_conf=$(whoami)
 if [ -f ~/.bash_$user_conf ]; then
     . ~/.bash_$user_conf

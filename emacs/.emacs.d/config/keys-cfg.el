@@ -105,7 +105,7 @@
 
 (global-set-key (kbd "C-n") 'new-empty-buffer) ; Open New File
 (global-set-key (kbd "C-S-n") 'make-frame-command) ; open a new window.
-(global-set-key (kbd "C-o") 'find-file) ; Open
+(global-set-key (kbd "C-o") 'counsel-find-file) ; Open
 (global-set-key (kbd "C-w") 'close-current-buffer) ; Close
 (global-set-key (kbd "C-s") 'save-buffer) ; Save
 (global-set-key (kbd "C-S-s") 'write-file) ; Save As.

@@ -38,7 +38,7 @@
 		    (when (eq major-mode 'erc-mode)
 		      (setq erc-fill-column (- (window-width w) 2)))))))))
 
-(my/require-softly 'erc-input-fill)
+(require 'erc-input-fill)
 
 (setq erc-timestamp-only-if-changed-flag nil
           erc-timestamp-format "%H:%M "
