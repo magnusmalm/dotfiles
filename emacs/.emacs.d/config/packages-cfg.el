@@ -96,7 +96,9 @@ _h_ ^✜^ _l_     _r_eplace    _,_ unmark  _o_: quit
 
 (use-package counsel
   :ensure t
-  :bind ("M-a" . counsel-M-x))
+  :bind (("M-a" . counsel-M-x)
+	 ("C-h v" . counsel-describe-variable)
+	 ("C-h f" . counsel-describe-function)))
 
 (use-package swiper
   :ensure t
