@@ -29,8 +29,6 @@
   (setq ivy-re-builders-alist
 	'((ivy-switch-buffer . ivy--regex-ignore-order)
 	  (t . ivy--regex-ignore-order)))
-
-  ;; (setq ivy-re-builders-alist
   (define-key ivy-minibuffer-map (kbd "M-k") 'ivy-next-line)
   (define-key ivy-minibuffer-map (kbd "M-i") 'ivy-previous-line)
   (define-key ivy-minibuffer-map (kbd "M-I") 'ivy-scroll-down-command)
@@ -536,7 +534,7 @@ abort completely with `C-g'."
       "line numers"
       ("r" rnum "relative line numbers")
       ("l" num "line numbers"))
-    (global-set-key (kbd "C-c C-l") #'hydra-line-numbers/body)))
+    (bind-key* "C-c C-l" 'hydra-line-numbers/body)))
 
 (use-package beacon
   :ensure t
@@ -561,7 +559,7 @@ abort completely with `C-g'."
     ("b" rainbow-blocks-mode "blocks")
     ("i" rainbow-identifiers-mode "identifiers")
     ("d" rainbow-delimiters-mode "delimiters"))
-  (global-set-key (kbd "C-c C-r") #'hydra-rainbow/body))
+  (bind-key* "C-c C-r" 'hydra-rainbow/body))
 
 (use-package yasnippet
   :ensure t
@@ -585,7 +583,7 @@ abort completely with `C-g'."
     ("c" aya-create "aya-create")
     ("x" aya-expand "aya-expand")
     ("o" aya-open-line "aya-open"))
-  (global-set-key (kbd "C-c C-y") 'hydra-yasnippet/body)
+  (bind-key* "C-c C-y" 'hydra-yasnippet/body)
   (setq-default yas-prompt-functions '(yas-ido-prompt yas-dropdown-prompt)))
 
 (use-package mingus
