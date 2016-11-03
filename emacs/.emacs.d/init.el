@@ -66,7 +66,7 @@
 (require 'erc-cfg)
 
 (require 'insert-time-string)
-(global-set-key (kbd "C-c C-t") 'insert-time-string)
+(bind-key* "C-c C-t" 'insert-time-string)
 (setq insert-time-string-format-alist
       (cons '("pseudo-iso-date" . "%Y-%m-%d") insert-time-string-format-alist))
 
@@ -105,8 +105,7 @@
 (set-register ?u (cons 'file user-config))
 (set-register ?h (cons 'file host-config))
 
-(global-set-key (kbd "C-c C-j")
-		'jump-to-register)
+(bind-key* "C-c M-j" 'jump-to-register)
 
 ;;;; UI
 (if window-system
@@ -175,10 +174,12 @@
 ;;;; Misc
 (show-paren-mode 1)
 
-(require 'autorevert)
-(global-auto-revert-mode)
-(setq auto-revert-verbose nil)
-(setq auto-revert-remote-files t)
+(bind-key* "C-+" 'text-scale-adjust)
+(bind-key* "C--" 'text-scale-adjust)
+;; C-x C-0 restores the default font size
+
+;; show keystrokes
+(setq echo-keystrokes 0.01)
 
 (global-hl-line-mode 1) ; turn on highlighting current line
 (make-variable-buffer-local 'global-hl-line-mode)
@@ -252,7 +253,7 @@
     (ring-insert lang-ring lang)
     (ispell-change-dictionary lang)))
 
-(global-set-key (kbd "C-1") 'cycle-ispell-languages)
+(bind-key* "C-1" 'cycle-ispell-languages)
 
 
 ;; if (aspell installed) { use aspell}

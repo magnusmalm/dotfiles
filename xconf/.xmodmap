@@ -7,66 +7,68 @@ keycode  13 = 4 dollar EuroSign
 keycode  14 = 5 percent
 keycode  15 = 6 ampersand
 keycode  16 = 7 slash
-keycode  17 = 8 bracketleft braceleft
-keycode  18 = 9 bracketright braceright
+keycode  17 = 8 bracketleft NoSymbol NoSymbol braceleft
+keycode  18 = 9 bracketright NoSymbol NoSymbol braceright
 keycode  19 = 0 equal
-keycode  20 = plus question backslash
+keycode  20 = plus question NoSymbol NoSymbol backslash
 keycode  21 = grave acute NoSymbol NoSymbol dead_acute dead_circumflex
 keycode  22 = BackSpace BackSpace
 keycode  23 = Tab ISO_Left_Tab
-keycode  24 = q Q at
+
+keycode  24 = q Q NoSymbol NoSymbol at
 keycode  25 = w W
-keycode  26 = e E EuroSign
-keycode  27 = r R registered
-keycode  28 = t T uparrow
-keycode  29 = y Y downarrow
-keycode  30 = u U leftarrow
-keycode  31 = i I rightarrow
-keycode  32 = o O oe
-keycode  33 = p P thorn
+keycode  26 = e E NoSymbol NoSymbol EuroSign
+keycode  27 = r R NoSymbol NoSymbol registered
+keycode  28 = t T NoSymbol NoSymbol uparrow
+keycode  29 = y Y NoSymbol NoSymbol downarrow
+keycode  30 = u U NoSymbol NoSymbol leftarrow
+keycode  31 = i I NoSymbol NoSymbol rightarrow F31
+keycode  32 = o O NoSymbol NoSymbol oe
+keycode  33 = p P NoSymbol NoSymbol thorn
 keycode  34 = aring Aring
-keycode  35 = asciicircum parenleft parenright
-keycode  36 = Return NoSymbol Return
+keycode  35 = asciicircum NoSymbol NoSymbol parenleft parenright
+keycode  36 = Return NoSymbol NoSymbol NoSymbol Return
 keycode  37 = Control_L NoSymbol Control_L
 
-! Emacs previous-user-buffer, Conkeror back (Was F38)
-keycode  38 = a A F13
-! Emacs next-user-buffer, Conkeror forward (Was F39)
-keycode  39 = s S F14
-
-keycode  40 = d D underscore
-keycode  41 = f F Return
-keycode  42 = g G F15
-keycode  43 = h H F16 F30
-keycode  44 = j J F17
-keycode  45 = k K minus
-keycode  46 = l L F18
-keycode  47 = odiaeresis Odiaeresis F19
-keycode  48 = adiaeresis Adiaeresis F20
-keycode  49 = slash asciitilde backslash
+! HOME ROW (plus key to left of '1' and left shift)
+! Emacs previous-user-buffer (AltGr+a) previous-emacs-buffer (AltGr+Shift+a)
+keycode  38 = a A NoSymbol NoSymbol F13 F22
+! Emacs next-user-buffer (AltGr+s) next-emacs-buffer (AltGr+Shift+s)
+keycode  39 = s S NoSymbol NoSymbol F14 F23
+keycode  40 = d D NoSymbol NoSymbol parenleft F24
+! avy-goto-word-1 (AltGr+f)
+keycode  41 = f F NoSymbol NoSymbol F15 F25
+! clipboard-kill-ring-save (AltGr+g)
+keycode  42 = g G NoSymbol NoSymbol F16 F26
+keycode  43 = h H NoSymbol NoSymbol F17 F27
+keycode  44 = j J NoSymbol NoSymbol Return F28
+keycode  45 = k K NoSymbol NoSymbol parenright F29
+! clipboard-yank (AltGr+l)
+keycode  46 = l L NoSymbol NoSymbol F18 F30
+keycode  47 = odiaeresis Odiaeresis NoSymbol NoSymbol
+! clipboard-kill-region (AltGr+ä)
+keycode  48 = adiaeresis Adiaeresis NoSymbol NoSymbol
+keycode  49 = slash asciitilde NoSymbol NoSymbol backslash
 keycode  50 = Shift_L NoSymbol Shift_L
-keycode  51 = apostrophe asterisk F21
+keycode  51 = apostrophe asterisk NoSymbol NoSymbol
+! END HOME ROW
 
-! Emacs previous-emacs-buffer (Was F47)
-keycode  52 = z Z F22
-! Emacs next-emacs-buffer (Was F48)
-keycode  53 = x X F23
-
-keycode  54 = c C copyright
-keycode  55 = v V F24
-keycode  56 = b B F25
-keycode  57 = n N F26
-keycode  58 = m M F27
-keycode  59 = comma semicolon F28
-keycode  60 = period colon F29
-
-keycode  61 = Mode_switch Mode_switch Mode_switch
+keycode  52 = z Z NoSymbol NoSymbol F21 F32
+keycode  53 = x X NoSymbol NoSymbol F25 F33
+keycode  54 = c C NoSymbol NoSymbol copyright
+keycode  55 = v V NoSymbol NoSymbol F20
+keycode  56 = b B NoSymbol NoSymbol F19
+keycode  57 = n N NoSymbol NoSymbol
+keycode  58 = m M NoSymbol NoSymbol
+keycode  59 = comma semicolon NoSymbol NoSymbol
+keycode  60 = period colon NoSymbol NoSymbol
+keycode  61 = minus underscore
 
 keycode  62 = Shift_R NoSymbol Shift_R
 keycode  63 = KP_Multiply KP_Multiply KP_Multiply KP_Multiply KP_Multiply KP_Multiply XF86ClearGrab
 keycode  64 = Alt_L Meta_L Alt_L Meta_L
 keycode  65 = space space space space space nobreakspace space
-! keycode  66 = Control_L NoSymbol Control_L
+keycode  66 = Control_L NoSymbol Control_L
 keycode  67 = F1 F1 F1 F1 F1 F1 XF86Switch_VT_1
 keycode  68 = F2 F2 F2 F2 F2 F2 XF86Switch_VT_2
 keycode  69 = F3 F3 F3 F3 F3 F3 XF86Switch_VT_3

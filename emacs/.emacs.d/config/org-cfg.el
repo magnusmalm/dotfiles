@@ -98,7 +98,7 @@
     (interactive)
     (find-file (get-journal-file-today)))
 
-  (global-set-key (kbd "C-c f j") 'journal-file-today)
+  (bind-key* "C-c f j" 'journal-file-today)
 
   (defun get-journal-file-yesterday ()
     "Return filename for yesterday's journal entry."
@@ -110,7 +110,7 @@
     (interactive)
     (find-file (get-journal-file-yesterday)))
 
-  (global-set-key (kbd "C-c f y") 'journal-file-yesterday)
+  (bind-key* "C-c f y" 'journal-file-yesterday)
 
   (defun journal-file-insert ()
     "Insert's the journal heading based on the file's name."
@@ -148,7 +148,7 @@ same day of the month, but will be the same day of the week."
     (let ((journal-file (concat org-journal-dir (journal-last-year-file))))
       (find-file journal-file)))
 
-  (global-set-key (kbd "C-c f L") 'journal-last-year)
+  (bind-key* "C-c f L" 'journal-last-year)
   )
 
 
