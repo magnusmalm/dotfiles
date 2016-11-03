@@ -345,7 +345,8 @@ abort completely with `C-g'."
   :init
   (hook-into-modes 'flycheck-mode '(prog-mode-hook))
   :config
-  (setq flycheck-display-errors-function nil))
+  (setq flycheck-display-errors-function #'flycheck-display-error-messages)
+  (setq flycheck-display-errors-delay 0.1))
 
 (use-package magit
   :ensure t

@@ -1,5 +1,7 @@
 (defconst emacs-start-time (current-time))
 
+(setq server-use-tcp t)
+
 ;;; Disable toolbar and scrollbar asap to avoid redraws
 (mapc (lambda (mode) (when (fboundp mode) (apply mode '(0))))
       '(tool-bar-mode
