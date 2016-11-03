@@ -115,6 +115,6 @@ WINDOW, MAX-WIDTH and MIN-WIDTH have the same meaning as in
 	(dotimes (i 3)
 	  (windsize-right))))))
 
-(global-set-key (kbd "C-c M-n") 'erc-toggle-nicklist)
+(bind-key* "C-c M-n" 'erc-toggle-nicklist)
 
 (provide 'erc-cfg)

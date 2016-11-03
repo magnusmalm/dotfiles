@@ -8,93 +8,92 @@
 
 ;;; --------------------------------------------------
 ;;; Misc
-(global-set-key (kbd "C-c u") 'set-bfr-to-8-unx)
+(bind-key* "C-c u" 'set-bfr-to-8-unx)
 
 ;;; --------------------------------------------------
 ;;; CURSOR MOVEMENTS
 
 ;; Single char cursor movement
-(global-set-key (kbd "M-j") 'backward-char)
-(global-set-key (kbd "M-l") 'forward-char)
-(global-set-key (kbd "M-i") 'previous-line)
-(global-set-key (kbd "M-k") 'next-line)
+(bind-key* "M-j" 'backward-char)
+(bind-key* "M-l" 'forward-char)
+(bind-key* "M-i" 'previous-line)
+(bind-key* "M-k" 'next-line)
 
 ;; Move by word
-(global-set-key (kbd "M-u") 'backward-word)
-(global-set-key (kbd "M-o") 'forward-word) ; was (prefix)
+(bind-key* "M-u" 'backward-word)
+(bind-key "M-o" 'forward-word) ; was (prefix)
 
 ;; Move by paragraph
-(global-set-key (kbd "M-U") 'backward-paragraph)
-(global-set-key (kbd "M-O") 'forward-paragraph)
+(bind-key* "M-U" 'backward-paragraph)
+(bind-key* "M-O" 'forward-paragraph)
 
 ;; Move to beginning/ending of line
-;; (global-set-key (kbd "M-h") 'move-beginning-of-line)
-(global-set-key (kbd "M-H") 'move-end-of-line)
+;; (bind-key* "M-h" 'move-beginning-of-line)
+(bind-key* "M-H" 'move-end-of-line)
 
 ;; Move by screen (page up/down)
-(global-set-key (kbd "M-I") 'scroll-down)
-(global-set-key (kbd "M-K") 'scroll-up)
+(bind-key* "M-I" 'scroll-down)
+(bind-key* "M-K" 'scroll-up)
 
 ;; Move to beginning/ending of file
-(global-set-key (kbd "M-J") 'beginning-of-buffer)
-(global-set-key (kbd "M-L") 'end-of-buffer)
+(bind-key* "M-J" 'beginning-of-buffer)
+(bind-key* "M-L" 'end-of-buffer)
 
 ;; isearch
-(global-set-key (kbd "M-;") 'move-cursor-previous-pane)
-(global-set-key (kbd "M-:") 'move-cursor-next-pane)
+(bind-key* "M-;" 'move-cursor-previous-pane)
+(bind-key* "M-:" 'move-cursor-next-pane)
 
-(global-set-key (kbd "M-p") 'recenter-top-bottom)
+(bind-key* "M-p" 'recenter-top-bottom)
 
 ;;; MAJOR EDITING COMMANDS
 
 ;; Delete previous/next char.
-(global-set-key (kbd "M-d") 'delete-backward-char)
-(global-set-key (kbd "M-f") 'delete-char)
+(bind-key* "M-d" 'delete-backward-char)
+(bind-key* "M-f" 'delete-char)
 
 ; Delete previous/next word.
-(global-set-key (kbd "M-e") 'backward-kill-word)
-(global-set-key (kbd "M-r") 'kill-word)
+(bind-key* "M-e" 'backward-kill-word)
+(bind-key* "M-r" 'kill-word)
 
 ; Copy Cut Paste, Paste previous
-(global-set-key (kbd "M-x") 'xah-cut-line-or-region)
-(global-set-key (kbd "M-c") 'xah-copy-line-or-region)
-(global-set-key (kbd "M-v") 'yank)
-(global-set-key (kbd "M-V") 'yank-pop)
-(global-set-key (kbd "M-C") 'copy-all)
-(global-set-key (kbd "M-X") 'cut-all)
+(bind-key* "M-x" 'xah-cut-line-or-region)
+(bind-key* "M-c" 'xah-copy-line-or-region)
+(bind-key* "M-v" 'yank)
+(bind-key* "M-V" 'yank-pop)
+(bind-key* "M-C" 'copy-all)
+(bind-key* "M-X" 'cut-all)
 
 ;; undo and redo
-(global-set-key (kbd "M-Z") 'undo-tree-redo)
-(global-set-key (kbd "M-z") 'undo-tree-undo)
+(bind-key* "M-Z" 'undo-tree-redo)
+(bind-key* "M-z" 'undo-tree-undo)
 
 ; Kill line
-(global-set-key (kbd "M-g") 'kill-line)
-(global-set-key (kbd "M-G") 'kill-line-backward)
+(bind-key* "M-g" 'kill-line)
+(bind-key* "M-G" 'kill-line-backward)
 
 ;;; Textual Transformation
 
-(global-set-key (kbd "M-S-SPC") 'mark-paragraph)
-(global-set-key (kbd "M-w") 'shrink-whitespaces)
-(global-set-key (kbd "M-'") 'comment-dwim)
-(global-set-key (kbd "M-/") 'toggle-letter-case)
+(bind-key* "M-S-SPC" 'mark-paragraph)
+(bind-key* "M-'" 'comment-dwim)
+(bind-key* "M-/" 'toggle-letter-case)
 
 ; keyword completion, because Alt+Tab is used by OS
-(global-set-key (kbd "M-t") 'call-keyword-completion)
+(bind-key* "M-t" 'call-keyword-completion)
 
 ; Hard-wrap/un-hard-wrap paragraph
-(global-set-key (kbd "M-q") 'compact-uncompact-block)
+(bind-key* "M-q" 'compact-uncompact-block)
 
 ;;; EMACS'S SPECIAL COMMANDS
 
 ; Mark point.
-(global-set-key (kbd "M-SPC") 'set-mark-command)
+(bind-key* "M-SPC" 'set-mark-command)
 
-;; (global-set-key (kbd "M-a") 'smex)
-(global-set-key (kbd "M-A") 'shell-command)
+;; (bind-key* "M-a" 'smex)
+(bind-key* "M-A" 'shell-command)
 
 ;;; WINDOW SPLITING
-(global-set-key (kbd "M-s") 'swiper)
-(global-set-key (kbd "M-S") 'counsel-ag)
+(bind-key* "M-s" 'swiper)
+(bind-key* "M-S" 'counsel-ag)
 
 ;;; --------------------------------------------------
 ;;; STANDARD SHORTCUTS
@@ -103,53 +102,50 @@
 
 (setq mac-pass-command-to-system nil) ; so that Cmd+H won't activate Hide Current App and Cmd+Shift+q won't logout user.
 
-(global-set-key (kbd "C-n") 'new-empty-buffer) ; Open New File
-(global-set-key (kbd "C-S-n") 'make-frame-command) ; open a new window.
-(global-set-key (kbd "C-o") 'counsel-find-file) ; Open
-(global-set-key (kbd "C-w") 'close-current-buffer) ; Close
-(global-set-key (kbd "C-s") 'save-buffer) ; Save
-(global-set-key (kbd "C-S-s") 'write-file) ; Save As.
-(global-set-key (kbd "C-p") 'print-buffer) ; Print
-(global-set-key (kbd "C-a") 'mark-whole-buffer) ; Select All
-(global-set-key (kbd "C-S-w") 'delete-frame) ; close Window.
+(bind-key* "C-n" 'new-empty-buffer) ; Open New File
+(bind-key* "C-S-n" 'make-frame-command) ; open a new window.
+(bind-key* "C-o" 'counsel-find-file) ; Open
+(bind-key* "C-w" 'close-current-buffer) ; Close
+(bind-key* "C-s" 'save-buffer) ; Save
+(bind-key* "C-S-s" 'write-file) ; Save As.
+(bind-key* "C-p" 'print-buffer) ; Print
+(bind-key* "C-a" 'mark-whole-buffer) ; Select All
+(bind-key* "C-S-w" 'delete-frame) ; close Window.
 
-(global-set-key (kbd "<delete>") 'delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
+(bind-key* "<delete>" 'delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
 
-(global-set-key (kbd "M-~") 'switch-to-previous-frame)
-(global-set-key (kbd "M-`") 'switch-to-next-frame)
+(bind-key* "M-~" 'switch-to-previous-frame)
+(bind-key* "M-`" 'switch-to-next-frame)
 
 
-(global-set-key (kbd "M-m") 'ido-switch-buffer)
+(bind-key* "M-m" 'ido-switch-buffer)
 
-(global-set-key (kbd "M-<prior>") 'previous-user-buffer)
-(global-set-key (kbd "M-<next>") 'next-user-buffer)
+(bind-key* "M-<prior>" 'previous-user-buffer)
+(bind-key* "M-<next>" 'next-user-buffer)
 
-(global-set-key (kbd "C-<prior>") 'previous-emacs-buffer)
-(global-set-key (kbd "C-<next>") 'next-emacs-buffer)
+(bind-key* "C-<prior>" 'previous-emacs-buffer)
+(bind-key* "C-<next>" 'next-emacs-buffer)
 
-(global-set-key (kbd "<f13>") 'previous-user-buffer)
-(global-set-key (kbd "<f14>") 'next-user-buffer)
+(bind-key* "<f13>" 'previous-user-buffer)
+(bind-key* "<f14>" 'next-user-buffer)
 
-(global-set-key (kbd "<f22>") 'previous-emacs-buffer)
-(global-set-key (kbd "<f23>") 'next-emacs-buffer)
+(bind-key* "<f22>" 'previous-emacs-buffer)
+(bind-key* "<f23>" 'next-emacs-buffer)
 
-(global-set-key (kbd "M-S-<prior>") 'backward-page)
-(global-set-key (kbd "M-S-<next>") 'forward-page)
+(bind-key* "M-S-<prior>" 'backward-page)
+(bind-key* "M-S-<next>" 'forward-page)
 
-(global-set-key (kbd "M-5") 'query-replace)
-(global-set-key (kbd "M-%") 'query-replace-regexp)
+(bind-key* "M-1" 'delete-other-windows)
+(bind-key* "M-!" 'delete-window)
 
-(global-set-key (kbd "M-1") 'delete-other-windows)
-(global-set-key (kbd "M-!") 'delete-window)
+(bind-key* "M->" 'split-window-vertically)
+(bind-key* "M-<" 'split-window-horizontally)
 
-(global-set-key (kbd "M->") 'split-window-vertically)
-(global-set-key (kbd "M-<") 'split-window-horizontally)
+(bind-key* "M-8" 'extend-selection)
+(bind-key* "M-*" 'select-text-in-quote)
 
-(global-set-key (kbd "M-8") 'extend-selection)
-(global-set-key (kbd "M-*") 'select-text-in-quote)
-
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-h m") 'describe-major-mode)
+(bind-key* "C-x C-b" 'ibuffer)
+(bind-key* "C-h m" 'describe-major-mode)
 
 (add-hook 'w3m-mode-hook
  (lambda ()
@@ -511,65 +507,7 @@ EOL chars by space when the EOL char is not inside string.
       (put this-command 'stateIsCompact-p (if currentStateIsCompact
                                               nil t)) ) ) )
 
-(defun shrink-whitespaces ()
-  "Remove white spaces around cursor to just one or none.
-If current line does not contain non-white space chars, then remove blank lines to just one.
-If current line contains non-white space chars, then shrink any whitespace char surrounding cursor to just one space.
-If current line is a single space, remove that space.
 
-Calling this command 3 times will always result in no whitespaces around cursor."
-  (interactive)
-  (let (
-        cursor-point
-        line-has-meat-p  ; current line contains non-white space chars
-        spaceTabNeighbor-p
-        whitespace-begin whitespace-end
-        space-or-tab-begin space-or-tab-end
-        line-begin-pos line-end-pos
-        )
-    (save-excursion
-      ;; todo: might consider whitespace as defined by syntax table, and also consider whitespace chars in unicode if syntax table doesn't already considered it.
-      (setq cursor-point (point))
-
-      (setq spaceTabNeighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil) )
-      (move-beginning-of-line 1) (setq line-begin-pos (point) )
-      (move-end-of-line 1) (setq line-end-pos (point) )
-      ;;       (re-search-backward "\n$") (setq line-begin-pos (point) )
-      ;;       (re-search-forward "\n$") (setq line-end-pos (point) )
-      (setq line-has-meat-p (if (< 0 (count-matches "[[:graph:]]" line-begin-pos line-end-pos)) t nil) )
-      (goto-char cursor-point)
-
-      (skip-chars-backward "\t ")
-      (setq space-or-tab-begin (point))
-
-      (skip-chars-backward "\t \n")
-      (setq whitespace-begin (point))
-
-      (goto-char cursor-point)      (skip-chars-forward "\t ")
-      (setq space-or-tab-end (point))
-      (skip-chars-forward "\t \n")
-      (setq whitespace-end (point))
-      )
-
-    (if line-has-meat-p
-        (let (deleted-text)
-          (when spaceTabNeighbor-p
-            ;; remove all whitespaces in the range
-            (setq deleted-text (delete-and-extract-region space-or-tab-begin space-or-tab-end))
-            ;; insert a whitespace only if we have removed something
-            ;; different that a simple whitespace
-            (if (not (string= deleted-text " "))
-                (insert " ") ) ) )
-
-      (progn
-        ;; (delete-region whitespace-begin whitespace-end)
-        ;; (insert "\n")
-        (delete-blank-lines)
-        )
-      ;; todo: possibly code my own delete-blank-lines here for better efficiency, because delete-blank-lines seems complex.
-      )
-    )
-  )
 
 (defun toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
@@ -735,7 +673,7 @@ Else it is a user buffer."
 ;; `C-x l' is `count-lines-page' by default. If you
 ;; use that, you can try s-l or <C-return>.
 (define-key ctl-x-map "l" 'launcher-map)
-(global-set-key (kbd "s-l") 'launcher-map)
+(bind-key* "s-l" 'launcher-map)
 (define-key launcher-map "p" #'paradox-list-packages)
 (define-key launcher-map "c" #'calc)
 (define-key launcher-map "d" #'ediff-buffers)
@@ -953,65 +891,7 @@ EOL chars by space when the EOL char is not inside string.
       (put this-command 'stateIsCompact-p (if currentStateIsCompact
                                               nil t)) ) ) )
 
-(defun shrink-whitespaces ()
-  "Remove white spaces around cursor to just one or none.
-If current line does not contain non-white space chars, then remove blank lines to just one.
-If current line contains non-white space chars, then shrink any whitespace char surrounding cursor to just one space.
-If current line is a single space, remove that space.
 
-Calling this command 3 times will always result in no whitespaces around cursor."
-  (interactive)
-  (let (
-        cursor-point
-        line-has-meat-p  ; current line contains non-white space chars
-        spaceTabNeighbor-p
-        whitespace-begin whitespace-end
-        space-or-tab-begin space-or-tab-end
-        line-begin-pos line-end-pos
-        )
-    (save-excursion
-      ;; todo: might consider whitespace as defined by syntax table, and also consider whitespace chars in unicode if syntax table doesn't already considered it.
-      (setq cursor-point (point))
-
-      (setq spaceTabNeighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil) )
-      (move-beginning-of-line 1) (setq line-begin-pos (point) )
-      (move-end-of-line 1) (setq line-end-pos (point) )
-      ;;       (re-search-backward "\n$") (setq line-begin-pos (point) )
-      ;;       (re-search-forward "\n$") (setq line-end-pos (point) )
-      (setq line-has-meat-p (if (< 0 (count-matches "[[:graph:]]" line-begin-pos line-end-pos)) t nil) )
-      (goto-char cursor-point)
-
-      (skip-chars-backward "\t ")
-      (setq space-or-tab-begin (point))
-
-      (skip-chars-backward "\t \n")
-      (setq whitespace-begin (point))
-
-      (goto-char cursor-point)      (skip-chars-forward "\t ")
-      (setq space-or-tab-end (point))
-      (skip-chars-forward "\t \n")
-      (setq whitespace-end (point))
-      )
-
-    (if line-has-meat-p
-        (let (deleted-text)
-          (when spaceTabNeighbor-p
-            ;; remove all whitespaces in the range
-            (setq deleted-text (delete-and-extract-region space-or-tab-begin space-or-tab-end))
-            ;; insert a whitespace only if we have removed something
-            ;; different that a simple whitespace
-            (if (not (string= deleted-text " "))
-                (insert " ") ) ) )
-
-      (progn
-        ;; (delete-region whitespace-begin whitespace-end)
-        ;; (insert "\n")
-        (delete-blank-lines)
-        )
-      ;; todo: possibly code my own delete-blank-lines here for better efficiency, because delete-blank-lines seems complex.
-      )
-    )
-  )
 
 (defun toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
@@ -1172,6 +1052,6 @@ Else it is a user buffer."
    )
  )
 
-(global-set-key (kbd "C-x g") 'google-this-mode-submap)
+(bind-key* "C-x g" 'google-this-mode-submap)
 
 (provide 'keys-cfg)

@@ -5,6 +5,9 @@
 
 ;;; Code:
 
+(use-package flx
+  :ensure t)
+
 (use-package ivy
   :ensure t
   :diminish (ivy-mode . "")
@@ -24,79 +27,14 @@
   (setq ivy-initial-inputs-alist nil)
   ;; configure regexp engine.
   (setq ivy-re-builders-alist
-	;; allow input not in order
-        '((t   . ivy--regex-ignore-order)))
+	'((ivy-switch-buffer . ivy--regex-ignore-order)
+	  (t . ivy--regex-ignore-order)))
   (define-key ivy-minibuffer-map (kbd "M-k") 'ivy-next-line)
   (define-key ivy-minibuffer-map (kbd "M-i") 'ivy-previous-line)
   (define-key ivy-minibuffer-map (kbd "M-I") 'ivy-scroll-down-command)
   (define-key ivy-minibuffer-map (kbd "M-K") 'ivy-scroll-up-command)
   (define-key ivy-minibuffer-map (kbd "M-v") 'yank)
-
-  (defhydra hydra-ivy (:hint nil
-			     :color pink)
-    "
-^^^^^^          ^Actions^    ^Dired^     ^Quit^
-^^^^^^--------------------------------------------
-^ ^ _k_ ^ ^     _._ repeat   _m_ark      _i_: cancel
-_h_ ^✜^ _l_     _r_eplace    _,_ unmark  _o_: quit
-^ ^ _j_ ^ ^     _u_ndo
-"
-    ;; arrows
-    ("h" ivy-beginning-of-buffer)
-    ("j" ivy-next-line)
-    ("k" ivy-previous-line)
-    ("l" ivy-end-of-buffer)
-    ;; actions
-    ("." hydra-repeat)
-    ("r" ivy-replace)
-    ("u" ivy-undo)
-    ;; dired
-    ("m" ivy-dired-mark)
-    ("," ivy-dired-unmark)
-    ;; exit
-    ("o" keyboard-escape-quit :exit t)
-    ("i" nil))
-
-  (defun ivy-dired-mark (arg)
-    (interactive "p")
-    (dotimes (_i arg)
-      (with-ivy-window
-	(dired-mark 1))
-      (ivy-next-line 1)
-      (ivy--exhibit)))
-
-  (defun ivy-dired-unmark (arg)
-    (interactive "p")
-    (dotimes (_i arg)
-      (with-ivy-window
-	(dired-unmark 1))
-      (ivy-next-line 1)
-      (ivy--exhibit)))
-
-  (defun ivy-replace ()
-    (interactive)
-    (let ((from (with-ivy-window
-		  (move-beginning-of-line nil)
-		  (when (re-search-forward
-			 (ivy--regex ivy-text) (line-end-position) t)
-		    (match-string 0)))))
-      (if (null from)
-	  (user-error "No match")
-	(let ((rep (read-string (format "Replace [%s] with: " from))))
-	  (with-selected-window swiper--window
-	    (undo-boundary)
-	    (replace-match rep t t))))))
-
-  (defun ivy-undo ()
-    (interactive)
-    (with-ivy-window
-      (undo)))
-
   (define-key ivy-minibuffer-map (kbd "C-o") 'hydra-ivy/body))
-
-(use-package counsel
-  :ensure t
-  :bind ("M-a" . counsel-M-x))
 
 (use-package swiper
   :ensure t
@@ -106,7 +44,37 @@ _h_ ^✜^ _l_     _r_eplace    _,_ unmark  _o_: quit
     (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'symbol))))))
   (define-key swiper-map (kbd "M-.")
     (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'word))))))
-  (global-set-key (kbd "C-M-w") #'swiper))
+  (bind-key* "C-M-w" 'counsel-grep-or-swiper))
+
+(use-package counsel
+  :ensure t
+  :bind (("M-a" . counsel-M-x)
+	 ("C-h v" . counsel-describe-variable)
+	 ("C-h f" . counsel-describe-function)))
+
+(use-package avy
+  :ensure t
+  :bind (("M-<f15>" . avy-goto-line)
+	 ("M-n c" . avy-goto-char-2)
+	 ("M-n C" . avy-goto-char)
+	 ("<f15>" . avy-goto-word-1)
+	 ("M-n W" . avy-goto-word-0)))
+
+(use-package magit
+  :ensure t
+  :bind (("C-x m" . magit-status)
+	 ("C-x M-g" . magit-dispatch-popup))
+  :config
+  (progn
+    (setenv "GIT_PAGER" "")))
+
+(use-package ace-window
+  :ensure t
+  :config
+  (bind-key* "M-p" 'ace-window)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq aw-background nil)
+  (setq aw-scope 'frame))
 
 (use-package smart-mode-line
   :ensure t
@@ -126,40 +94,30 @@ _h_ ^✜^ _l_     _r_eplace    _,_ unmark  _o_: quit
 (use-package wgrep-ag
   :ensure t)
 
-(use-package projectile
-  :ensure t
-  :config
-  (setq projectile-keymap-prefix (kbd "C-x p"))
-  (setq projectile-switch-project-action
-	#'projectile-commander)
-  (def-projectile-commander-method ?s
-    "Open a *shell* buffer for the project."
-    ;; This requires a snapshot version of Projectile.
-    (projectile-run-shell))
-
-  (def-projectile-commander-method ?c
-    "Run `compile' in the project."
-    (projectile-compile-project nil))
-  (projectile-global-mode)
-  )
-
-(use-package counsel-projectile
-  :ensure t
-  :config
-  (counsel-projectile-on))
-
 (use-package windmove
   :ensure t
-  :config (windmove-default-keybindings 'shift))
+  :config
+  (bind-key* "<f21>" 'windmove-left)
+  (bind-key* "<f25>" 'windmove-right)
+  (bind-key* "<f33>" 'windmove-up)
+  (bind-key* "<f32>" 'windmove-down))
+
+(use-package switch-window
+  :ensure t
+  :config
+  (setq switch-window-shortcut-style 'qwerty)
+  (setq switch-window-minibuffer-shortcut (string-to-char "m"))
+  (bind-key "<f19>" 'switch-window))
 
 (use-package windsize
   :ensure t
   :init
   (progn
-    (global-set-key (kbd "C-S-s-<f17>") 'windsize-left)
-    (global-set-key (kbd "C-S-s-<f18>") 'windsize-right)
-    (global-set-key (kbd "C-s-→") 'windsize-up)
-    (global-set-key (kbd "C-s--") 'windsize-down)))
+    ;; AltGr + Shift + j/k/l/i (left/down/right/up)
+    (bind-key* "<f28>" 'windsize-left)
+    (bind-key* "<f29>" 'windsize-down)
+    (bind-key* "<f30>" 'windsize-right)
+    (bind-key* "<f31>" 'windsize-up)))
 
 (use-package hungry-delete
   :ensure t
@@ -264,8 +222,7 @@ abort completely with `C-g'."
     (mapc 'frame-set-background-mode (frame-list))
     (enable-theme 'solarized))
 
-  ;; color theme
-  (global-set-key (kbd "C-c s") 'toggle-dark-light-theme)
+  (bind-key* "C-c s" 'toggle-dark-light-theme)
 
   (custom-set-variables '(solarized-termcolors 256)))
 
@@ -300,17 +257,6 @@ abort completely with `C-g'."
 	company-backends)
   (setq company-global-modes '(not gud-mode)))
 
-;; (use-package ido
-;;   :ensure t
-;;   :config
-;;   (ido-mode t)
-;;   (ido-everywhere 1)
-;;   (setq ido-enable-flex-matching t)
-;;   (setq ido-use-virtual-buffers t)
-;;   (setq ido-save-directory-list-file (e-d-v "ido-last.el"))
-;;   (add-to-list 'ido-work-directory-list-ignore-regexps tramp-file-name-regexp)
-;; )
-
 (use-package recentf
   :ensure t
   :config
@@ -328,16 +274,34 @@ abort completely with `C-g'."
   (setq alert-default-style 'libnotify))
 
 (use-package autorevert
+  :commands auto-revert-mode
+  :diminish auto-revert-mode
+  :init
+  (add-hook 'find-file-hook #'(lambda () (auto-revert-mode 1)))
+  :config
+  (setq auto-revert-verbose nil)
+  (setq auto-revert-remote-files t))
+
+(use-package neotree
+  :ensure t
+  :bind
+  ("C-M-t" . neotree-toggle))
+
+(use-package yafolding
   :ensure t)
 
-;; (use-package flx-ido
-;;   :ensure t
-;;   :init
-;;   (progn
-;;     (setq ido-use-faces nil))
-;;   :config
-;;   (ido-mode)
-;;   (flx-ido-mode 1))
+(use-package git-gutter+
+  :ensure t
+  :diminish git-gutter+-mode
+  :config
+  (global-git-gutter+-mode))
+
+(use-package indent-guide
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook (lambda () (indent-guide-mode)))
+  (setq indent-guide-delay 0.1)
+  (setq indent-guide-recursive t))
 
 (use-package flycheck
   :ensure t
@@ -347,14 +311,6 @@ abort completely with `C-g'."
   :config
   (setq flycheck-display-errors-function #'flycheck-display-error-messages)
   (setq flycheck-display-errors-delay 0.1))
-
-(use-package magit
-  :ensure t
-  :bind (("C-x m" . magit-status)
-	 ("C-x M-g" . magit-dispatch-popup))
-  :config
-  (progn
-    (setenv "GIT_PAGER" "")))
 
 (use-package multiple-cursors
   :ensure t
@@ -381,14 +337,6 @@ abort completely with `C-g'."
   (progn
     (require 'smartparens-config)
     (smartparens-global-mode 1)))
-
-;; (use-package smex
-;;   :ensure t
-;;   :bind (("M-a" . smex)
-;;          ("M-A" . smex-major-mode-commands))
-;;   :init
-;;   (setq smex-save-file (e-d-v "smex-items")))
-
 
 (use-package which-key
   :ensure t
@@ -486,17 +434,6 @@ abort completely with `C-g'."
 (use-package org-pdfview
   :ensure t)
 
-;; (use-package flx)
-
-;; avy
-(use-package avy
-  :ensure t
-  :bind (("M-<f15>" . avy-goto-line)
-	 ("M-n c" . avy-goto-char-2)
-	 ("M-n C" . avy-goto-char)
-	 ("<f15>" . avy-goto-word-1)
-	 ("M-n W" . avy-goto-word-0)))
-
 (use-package multi-term
   :ensure t
   :init
@@ -564,10 +501,13 @@ abort completely with `C-g'."
   :ensure t
   :config
   (progn
-    (bind-keys*
-     ("M-h" . move-beginning-of-line)
-     )
-    (company-quickhelp-mode 1)))
+    (setq company-quickhelp-delay nil)
+    ;; (bind-keys*
+    ;;  ("M-h" . move-beginning-of-line)
+    ;;  )
+    (company-quickhelp-mode 1)
+    (eval-after-load 'company
+      '(define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin))))
 
 (use-package relative-line-numbers
   :ensure t
@@ -595,7 +535,7 @@ abort completely with `C-g'."
       "line numers"
       ("r" rnum "relative line numbers")
       ("l" num "line numbers"))
-    (global-set-key (kbd "C-c C-l") #'hydra-line-numbers/body)))
+    (bind-key* "C-c C-l" 'hydra-line-numbers/body)))
 
 (use-package beacon
   :ensure t
@@ -611,12 +551,6 @@ abort completely with `C-g'."
     (add-to-list 'beacon-dont-blink-commands 'previous-line))
   :diminish beacon-mode)
 
-;; (use-package paradox
-;;   :ensure t
-;;   :commands paradox-list-packages
-;;   :config
-;;   (setq paradox-execute-asynchronously t))
-
 (progn
   (use-package rainbow-blocks :ensure t)
   (use-package rainbow-identifiers :ensure t)
@@ -626,7 +560,7 @@ abort completely with `C-g'."
     ("b" rainbow-blocks-mode "blocks")
     ("i" rainbow-identifiers-mode "identifiers")
     ("d" rainbow-delimiters-mode "delimiters"))
-  (global-set-key (kbd "C-c C-r") #'hydra-rainbow/body))
+  (bind-key* "C-c C-r" 'hydra-rainbow/body))
 
 (use-package yasnippet
   :ensure t
@@ -650,109 +584,8 @@ abort completely with `C-g'."
     ("c" aya-create "aya-create")
     ("x" aya-expand "aya-expand")
     ("o" aya-open-line "aya-open"))
-  (global-set-key (kbd "C-c C-y") 'hydra-yasnippet/body)
+  (bind-key* "C-c C-y" 'hydra-yasnippet/body)
   (setq-default yas-prompt-functions '(yas-ido-prompt yas-dropdown-prompt)))
-
-;; (defhydra hydra-text (:hint nil)
-;;   "
-;; ^Modes^ ^Commands^ ^Rectangles^
-;; ----------------------------------------------------------------------
-;; _w_ritting mode _a_lign _k_ill
-;; _f_ill mode s_o_rt _y_ank
-;; _l_ine mode _D_efine word o_p_en
-;; fly_s_pell mode (_d_ at point) _c_lear
-;; _t_ypo mode _i_spell buffer _n_umber
-;; art_b_ollocks mode _h_elm word _r_eplace
-;; helm _u_nicode _I_nsert
-;; "
-;;   ("w" ejmr/toggle-writing-mode)
-;;   ("b" artbollocks-mode)
-;;   ("h" helm-word :color blue)
-;;   ("r" string-rectangle :color blue)
-;;   ("k" kill-rectangle :color blue)
-;;   ("y" yank-rectangle :color blue)
-;;   ("c" clear-rectangle :color blue)
-;;   ("I" string-insert-rectangle :color blue)
-;;   ("n" rectangle-number-lines :color blue)
-;;   ("p" open-rectangle :color blue)
-;;   ("u" helm-unicode :color blue)
-;;   ("f" auto-fill-mode)
-;;   ("a" align-regexp)
-;;   ("i" ispell-buffer :color blue)
-;;   ("o" sort-lines)
-;;   ("l" visual-line-mode)
-;;   ("s" flyspell-mode)
-;;   ("d" define-word-at-point :color blue)
-;;   ("D" define-word :color blue)
-;;   ("t" typo-mode))
-;; (global-set-key (kbd "C-c M-t") 'hydra-text/body)
-
-;; (use-package swoop
-;;   :ensure t
-;;   ;; :init (use-package helm-swoop)
-;;   :config
-;;   (defhydra hydra-swoop (:color blue)
-;;     "swoop"
-;;     ;; ("h" helm-swoop "helm")
-;;     ("s" swoop "swoop")
-;;     ("m" swoop-multi "multi")
-;;     ("p" swoop-pcre-regexp "pcre")
-;;     ("b" swoop-back-to-last-position "back"))
-;;   (global-set-key (kbd "C-c C-s") 'hydra-swoop/body))
-
-;; (progn
-;;   ;; (use-package hydra-examples :ensure t)
-;;   (defhydra hydra-window (:hint nil)
-;;     "
-;; Split: _v_ert _s_:horz
-;; Delete: _c_lose _o_ther
-;; Switch Window: _h_:left _j_:down _k_:up _l_:right
-;; Buffers: _p_revious _n_ext _b_:select _f_ind-file _F_projectile
-;; Winner: _u_ndo _r_edo
-;; Resize: _H_:splitter left _J_:splitter down _K_:splitter up _L_:splitter right
-;; Move: _a_:up _z_:down _i_menu"
-;;     ("z" scroll-up-line)
-;;     ("a" scroll-down-line)
-;;     ("i" idomenu)
-;;     ("u" winner-undo)
-;;     ("r" winner-redo)
-;;     ("h" windmove-left)
-;;     ("j" windmove-down)
-;;     ("k" windmove-up)
-;;     ("l" windmove-right)
-;;     ("p" previous-buffer)
-;;     ("n" next-buffer)
-;;     ("b" ido-switch-buffer)
-;;     ("f" ido-find-file)
-;;     ("F" projectile-find-file)
-;;     ("s" split-window-below)
-;;     ("v" split-window-right)
-;;     ("c" delete-window)
-;;     ("o" delete-other-windows)
-;;     ("H" hydra-move-splitter-left)
-;;     ("J" hydra-move-splitter-down)
-;;     ("K" hydra-move-splitter-up)
-;;     ("L" hydra-move-splitter-right)
-;;     ("q" nil))
-;;   (global-set-key (kbd "C-c C-w") #'hydra-window/body))
-
-;; (use-package origami
-;;   :ensure t
-;;   :config
-;;   (defhydra hydra-origami (:color red :hint nil)
-;;     "
-;; _o_pen node _n_ext fold toggle _f_orward
-;; _c_lose node _p_revious fold toggle _a_ll
-;; toggle _r_ecursively
-;; "
-;;     ("o" origami-open-node)
-;;     ("c" origami-close-node)
-;;     ("n" origami-next-fold)
-;;     ("p" origami-previous-fold)
-;;     ("f" origami-forward-toggle-node)
-;;     ("r" origami-recursively-toggle-node)
-;;     ("a" origami-toggle-all-nodes))
-;;   (global-set-key (kbd "C-c C-g") #'hydra-origami/body))
 
 (use-package mingus
   :ensure t)
@@ -777,7 +610,7 @@ abort completely with `C-g'."
   (defvar auto-insert-alist nil))
 
 (use-package google-this
-  :defer t
+  :ensure t
   :config
   (google-this-mode 1))
 
@@ -854,7 +687,10 @@ abort completely with `C-g'."
 (use-package anzu
   :ensure t
   :init (global-anzu-mode +1)
-  :diminish anzu-mode)
+  :diminish anzu-mode
+    :bind (
+    ("M-%" . anzu-query-replace)
+    ("C-M-%" . anzu-query-replace-regexp)))
 
 (use-package latex-preview-pane
   :ensure t)
@@ -870,6 +706,161 @@ abort completely with `C-g'."
 (use-package discover-my-major
   :ensure t
   :config)
+
+(use-package rainbow-mode
+  :config
+  (rainbow-mode)
+  (add-hook 'scss-mode-hook (lambda () (rainbow-mode))))
+
+(use-package dumb-jump
+  :ensure t
+  :config
+  (setq dumb-jump-selector 'ivy)
+  (setq dumb-jump-default-project "~/deve"))
+
+(use-package iedit
+  :ensure t
+  :config
+  (defun iedit-dwim (arg)
+    "Starts iedit but uses \\[narrow-to-defun] to limit its scope."
+    (interactive "P")
+    (if arg
+	(iedit-mode)
+      (save-excursion
+	(save-restriction
+	  (widen)
+	  ;; this function determines the scope of `iedit-start'.
+	  (if iedit-mode
+	      (iedit-done)
+	    ;; `current-word' can of course be replaced by other
+	    ;; functions.
+	    (narrow-to-defun)
+	    (iedit-start (current-word) (point-min) (point-max)))))))
+   (bind-key* "C-;" #'iedit-dwim ))
+
+(use-package pass
+  :ensure t
+  :config
+  (defun password-store-contents (entry)
+    "Return all contents of ENTRY.
+Returns all contents of the password data as a list of strings,
+one by line."
+    (s-lines (password-store--run-show entry)))
+
+  (defun malm-password-store-url (entry)
+    (let ((url (password-store-contents entry))
+	  (url_line nil))
+      (while url
+	(when (string-prefix-p "url: " (car url))
+	  (setq url_line (nth 1 (s-split " " (car url)))))
+	(setq url (cdr url))
+	)
+      (if (or (string-prefix-p "http://" url_line)
+	      (string-prefix-p "https://" url_line)
+	      (string-prefix-p "www." url_line)
+	      )
+	  (browse-url url_line)
+	(error "%s" "No url found or string does not look like a URL"))))
+
+  (defun counsel-pass (&optional initial-input)
+    (interactive)
+    (ivy-read "pass: " 'password-store-list
+	      :initial-input initial-input
+	      :dynamic-collection t
+	      :history 'counsel-pass-history
+	      :action '(1
+			("c" password-store-copy "Copy password to clipboard")
+			("e" password-store-edit "Edit entry")
+			("O" malm-password-store-url "Browse url of entry")
+			("o" (lambda (entry)
+			       (let ((passwd (password-store-get entry)))
+				 (password-store-copy entry)
+				 (malm-password-store-url entry))) "Copy to clipboard & browse url")))))
+
+(use-package ffap
+  :ensure t
+  :config
+  (ffap-bindings)
+  (bind-key* "C-o" 'counsel-find-file)
+  (bind-key* "C-d" 'dired-at-point))
+
+(use-package zygospore
+  :ensure t
+  :config
+  (bind-key* "M-1" 'zygospore-toggle-delete-other-windows))
+
+(use-package smart-region
+  :ensure t
+  :config (smart-region-on))
+
+(use-package yaml-mode
+  :ensure t
+  :config
+  (add-hook 'yaml-mode-hook
+        (lambda ()
+            (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
+
+(use-package popup-kill-ring
+  :ensure t
+  :config
+  (setq popup-kill-ring-keymap
+    (let ((keymap (make-sparse-keymap)))
+      (set-keymap-parent keymap popup-menu-keymap)
+      (define-key keymap (kbd "RET")     'popup-kill-ring-select)
+      (define-key keymap (kbd "M-k")     'popup-kill-ring-next)
+      (define-key keymap (kbd "M-i")     'popup-kill-ring-previous)
+      (define-key keymap (kbd "<down>")  'popup-kill-ring-next)
+      (define-key keymap (kbd "<up>")    'popup-kill-ring-previous)
+      (define-key keymap (kbd "C-f")     'popup-kill-ring-current)
+      (define-key keymap (kbd "C-b")     'popup-kill-ring-hide)
+      (define-key keymap (kbd "<right>") 'popup-kill-ring-current)
+      (define-key keymap (kbd "<left>")  'popup-kill-ring-hide)
+      keymap))
+  (bind-key* "M-Y" 'popup-kill-ring))
+
+(use-package popup-keys
+  :load-path "customize/")
+
+(use-package popup-keys-examples
+  :load-path "customize/"
+  :config
+  (bind-key* "C-x D" 'popup-keys:run-debug-commands)
+  (setq projectile-keymap-prefix (kbd "C-c P"))
+  (bind-key* "C-c p" 'popup-keys:run-projectile)
+  (bind-key* "C-x C-k"   'popup-keys:run-kmacro)
+  (bind-key* "C-x C-S-k" 'kmacro-keymap)
+  (bind-key* "C-x r" 'popup-keys:run-registers)
+  (bind-key* "C-x R" ctl-x-r-map)
+  ;; undo-tree annoyingly binds to the C-x r prefix and overrides the above.
+  (eval-after-load "undo-tree"
+    '(define-key undo-tree-map (kbd "C-x r") nil))
+  (add-hook 'org-load-hook
+	    (lambda ()
+	      (defvar org-mode-map)
+	      (define-key org-mode-map (kbd "<f20>") 'popup-keys:run-org-speed)))
+)
+
+(use-package projectile
+  :ensure t
+  :config
+  (setq projectile-keymap-prefix (kbd "C-x p"))
+  (setq projectile-switch-project-action
+	#'projectile-commander)
+  (def-projectile-commander-method ?s
+    "Open a *shell* buffer for the project."
+    ;; This requires a snapshot version of Projectile.
+    (projectile-run-shell))
+
+  (def-projectile-commander-method ?c
+    "Run `compile' in the project."
+    (projectile-compile-project nil))
+  (projectile-global-mode)
+  )
+
+(use-package counsel-projectile
+  :ensure t
+  :config
+  (counsel-projectile-on))
 
 (provide 'packages-cfg)
 ;;; packages.el ends here
